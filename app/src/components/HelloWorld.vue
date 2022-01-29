@@ -5,12 +5,12 @@
         <card-list v-model="items" #default="{ item }">
           <v-row>
             <v-col cols="12">
-              <v-text-field v-model="item.name" label="Name" hide-details />
+              <v-text-field v-model="item.description" label="Description" hide-details />
             </v-col>
           </v-row>
           <v-row>
             <v-col cols="12">
-              <v-text-field v-model="item.email" label="Email" hide-details />
+              <v-text-field v-model="item.points" label="Points" hide-details />
             </v-col>
           </v-row>
         </card-list>
@@ -31,30 +31,27 @@
 
 <script>
 import CardList from '@/components/CardList'
+import axios from 'axios';
 
 export default {
   components: {
     CardList
   },
 
-  data: () => ({
-    items: [
-      {
-        id: 1,
-        name: 'Jane Adams',
-        email: 'jane@adams.com'
-      },
-      {
-        id: 2,
-        name: 'Paul Davis',
-        email: 'paul@davis.com'
-      },
-      {
-        id: 3,
-        name: 'Amanda Brown',
-        email: 'amanda@brown.com'
+  created () {
+    console.log(`${location.hostname}:9000/orders`);
+    axios.get(`${location.hostname}:9000/orders`, {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
       }
-    ],
+    }).then(response => {
+      console.log(response);
+      console.log(response.data);
+    });
+  },
+
+  data: () => ({
+    items: [ ],
 
     counter: 10
   }),

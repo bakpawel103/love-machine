@@ -1,17 +1,53 @@
-const express = require('express')
-const serveStatic = require('serve-static')
-const path = require('path')
+const express = require('express');
+const serveStatic = require('serve-static');
+var cors = require('cors');
+const path = require('path');
 
-const app = express()
+const app = express();
 
-//here we are configuring dist to serve app files
-app.use('/', serveStatic(path.join(__dirname, '/dist')))
+app.use(express.json());
+app.use(cors());
 
-// this * route is to serve project on different page routes except root `/`
-app.get(/.*/, function (req, res) {
+app.all('*', function(req, res, next) {
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "X-Requested-With");
+	res.header('Access-Control-Allow-Headers', 'Content-Type');
+	next();
+});
+
+app.use('/', serveStatic(path.join(__dirname, '/dist')));
+
+const port = process.env.PORT || 9000;
+
+var orders = [];
+var userOrders = [];
+
+app.get('/', (req, res) => {
 	res.sendFile(path.join(__dirname, '/dist/index.html'))
-})
+});
 
-const port = process.env.PORT || 8080
-app.listen(port)
-console.log(`app is listening on port: ${port}`)
+app.get('/orders', (req, res) => {
+	res.json(orders);
+});
+app.get('/orders/:order_id', (req, res) => {
+	res.json(orders.find(order => order.id == req.params.order_id));
+});
+app.post('/orders', (req, res) => {
+	orders.push({ id: orders.length, ...req.body });
+	res.json(orders);
+});
+
+app.get('/user_orders', (req, res) => {
+	res.json(userOrders);
+});
+app.get('/user_orders/:user_order_id', (req, res) => {
+	res.json(userOrders.find(userOrder => userOrder.id == req.params.user_order_id));
+});
+app.post('/user_orders', (req, res) => {
+	userOrders.push({ id: userOrders.length, ...req.body });
+	res.json(userOrders);
+});
+
+app.listen(port, () => {
+	console.log(`app is listening on port: ${port}`);
+});
