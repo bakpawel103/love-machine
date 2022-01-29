@@ -39,8 +39,8 @@ export default {
   },
 
   created () {
-    console.log(`${location.hostname}:9000/orders`);
-    axios.get(`${location.hostname}:9000/orders`, {
+    console.log(`http://localhost:9000/orders`);
+    axios.get(`http://localhost:9000/orders`, {
       headers: {
         'Access-Control-Allow-Origin': '*',
       }
