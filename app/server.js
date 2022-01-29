@@ -17,7 +17,7 @@ app.all('*', function(req, res, next) {
 
 app.use('/', serveStatic(path.join(__dirname, '/dist')));
 
-const port = process.env.PORT || 9000;
+const port = process.env.PORT || 80;
 
 var orders = [];
 var userOrders = [];

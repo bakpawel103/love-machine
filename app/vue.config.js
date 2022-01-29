@@ -3,6 +3,6 @@ module.exports = {
     'vuetify'
   ],
   devServer: {
-    proxy: 'https://love-machine-app.herokuapp.com:9000/'
+    proxy: 'https://love-machine-app.herokuapp.com/'
   }
 }
