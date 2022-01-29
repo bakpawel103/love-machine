@@ -39,8 +39,8 @@ export default {
   },
 
   created () {
-    console.log(`http://localhost/orders`);
-    axios.get(`http://localhost/orders`, {
+    console.log(`https://love-machine-app.herokuapp.com/orders`);
+    axios.get(`https://love-machine-app.herokuapp.com/orders`, {
       headers: {
         'Access-Control-Allow-Origin': '*',
       }
