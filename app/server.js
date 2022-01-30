@@ -43,13 +43,13 @@ app.post('/user', (req, res) => {
 	saveData();
 });
 app.post('/set_points/:points', (req, res) => {
-	user.points = req.params.points;
+	user.points = parseInt(req.params.points);
 	res.json(user);
 
 	saveData();
 });
 app.post('/add_points/:points', (req, res) => {
-	user.points += req.params.points;
+	user.points = parseInt(user.points) + parseInt(req.params.points);
 	res.json(user);
 
 	saveData();
