@@ -2,6 +2,7 @@ const express = require('express');
 const serveStatic = require('serve-static');
 var cors = require('cors');
 const path = require('path');
+var uuid = require('uuid');
 const fs = require('fs');
 
 const port = process.env.PORT || 80;
@@ -61,7 +62,13 @@ app.get('/orders/:order_id', (req, res) => {
 	res.json(orders.find(order => order.id == req.params.order_id));
 });
 app.post('/orders', (req, res) => {
-	orders.push({ id: orders.length, ...req.body });
+	orders.push({ id: uuid.v4(), ...req.body });
+	res.json(orders);
+
+	saveData();
+});
+app.delete('/orders/:order_id', (req, res) => {
+	orders.splice(orders.findIndex(order => order.id === req.params.order_id), 1)
 	res.json(orders);
 
 	saveData();
@@ -74,7 +81,14 @@ app.get('/user_orders/:user_order_id', (req, res) => {
 	res.json(userOrders.find(userOrder => userOrder.id == req.params.user_order_id));
 });
 app.post('/user_orders', (req, res) => {
-	userOrders.push({ id: userOrders.length, ...req.body });
+	console.log(req.body);
+	userOrders.push({ id: uuid.v4(), ...req.body });
+	res.json(userOrders);
+
+	saveData();
+});
+app.delete('/user_orders/:user_order_id', (req, res) => {
+	userOrders.splice(userOrders.findIndex(userOrder => userOrder.id === req.params.user_order_id), 1)
 	res.json(userOrders);
 
 	saveData();

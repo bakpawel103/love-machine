@@ -24,7 +24,7 @@
 				<v-container fluid>
 					<v-row>
 						<v-col cols="12">
-							<card-list v-model="orders" #default="{ item }">
+							<card-list v-bind:add-icon="true" @addItem="addUserOrder" v-model="orders" #default="{ item }">
 								<v-row>
 									<v-col cols="12">
 										<v-text-field v-model="item.description" label="Description" hide-details />
@@ -54,7 +54,7 @@
 				<v-container fluid>
 					<v-row>
 						<v-col cols="12">
-							<card-list v-model="userOrders" #default="{ item }">
+							<card-list v-bind:add-icon="false" @addItem="addUserOrder" v-model="userOrders" #default="{ item }">
 								<v-row>
 									<v-col cols="12">
 										<v-text-field v-model="item.description" label="Description" hide-details />
@@ -85,7 +85,7 @@
 </template>
 
 <script>
-import CardList from '@/components/CardList'
+import CardList from '@/components/CardList';
 import axios from 'axios';
 
 export default {
@@ -110,11 +110,8 @@ export default {
 
 	methods: {
 		getUser () {
-			axios.get(`https://love-machine-app.herokuapp.com/user`, {
-				headers: {
-					'Access-Control-Allow-Origin': '*',
-				}
-			}).then(response => {
+			axios.get(`https://love-machine-app.herokuapp.com/user`)
+			.then(response => {
 				console.log(response.data);
 				this.user = response.data;
 				console.log(this.user);
@@ -122,11 +119,8 @@ export default {
 		},
 
 		getOrders () {
-			axios.get(`https://love-machine-app.herokuapp.com/orders`, {
-				headers: {
-					'Access-Control-Allow-Origin': '*',
-				}
-			}).then(response => {
+			axios.get(`https://love-machine-app.herokuapp.com/orders`)
+			.then(response => {
 				console.log(response.data);
 				this.orders.push(...response.data);
 				console.log(this.orders);
@@ -134,13 +128,19 @@ export default {
 		},
 
 		getUserOrders () {
-			axios.get(`https://love-machine-app.herokuapp.com/user_orders`, {
-				headers: {
-					'Access-Control-Allow-Origin': '*',
-				}
-			}).then(response => {
+			axios.get(`https://love-machine-app.herokuapp.com/user_orders`)
+			.then(response => {
 				console.log(response.data);
 				this.userOrders.push(...response.data);
+				console.log(this.userOrders);
+			});
+		},
+
+		addUserOrder (userOrder) {
+			axios.post(`https://love-machine-app.herokuapp.com/user_orders`, userOrder)
+			.then(response => {
+				console.log(response.data);
+				this.userOrders = response.data;
 				console.log(this.userOrders);
 			});
 		},

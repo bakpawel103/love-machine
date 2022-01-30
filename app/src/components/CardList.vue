@@ -12,6 +12,11 @@
             mdi-arrow-up
           </v-icon>
         </v-btn>
+        <v-btn v-if="addIcon" @click="add(item)" icon>
+          <v-icon>
+            mdi-bookmark-plus-outline
+          </v-icon>
+        </v-btn>
         <v-btn @click="remove(index)" icon>
           <v-icon>
             mdi-close
@@ -26,12 +31,15 @@
 </template>
 
 <script>
+
 export default {
   props: {
     value: {
       type: Array,
       default: () => []
     },
+
+    addIcon: Boolean,
 
     itemId: {
       type: String,
@@ -57,6 +65,10 @@ export default {
       newValue[index] = this.value[index + 1]
       newValue[index + 1] = this.value[index]
       this.$emit('input', newValue)
+    },
+
+    add (item) {
+      this.$emit('addItem', item);
     }
   }
 }
