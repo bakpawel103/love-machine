@@ -21,9 +21,17 @@ const port = process.env.PORT || 80;
 
 var orders = [];
 var userOrders = [];
+var user = {
+	name: "Julia",
+	points: 0
+}
 
 app.get('/', (req, res) => {
 	res.sendFile(path.join(__dirname, '/dist/index.html'))
+});
+
+app.get('/user', (req, res) => {
+	res.json(user);
 });
 
 app.get('/orders', (req, res) => {
