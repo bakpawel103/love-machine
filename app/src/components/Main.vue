@@ -8,6 +8,16 @@
 			</v-col>
 		</v-row>
 		<v-row>
+			<v-col cols="10">
+				<v-text-field v-model="tempUserPoints" label="Description" hide-details />
+			</v-col>
+			<v-col cols="2">
+				<v-btn @click="setUserPoints" text>
+					Add points
+        </v-btn>
+			</v-col>
+		</v-row>
+		<v-row>
 			<v-col cols="6">
 				<h2 style="text-align: center;">
 					Orders
@@ -97,6 +107,8 @@ export default {
 		this.getUser();
 		this.getOrders();
 		this.getUserOrders();
+
+		this.tempUserPoints = this.user.points;
 	},
 
 	data: () => ({
@@ -104,6 +116,7 @@ export default {
 			name: "",
 			points: 0
 		},
+		tempUserPoints: 0,
 		orders: [ ],
 		userOrders: [ ]
 	}),
@@ -111,56 +124,74 @@ export default {
 	methods: {
 		getUser () {
 			axios.get(`https://love-machine-app.herokuapp.com/user`)
-			.then(response => {
-				console.log(response.data);
-				this.user = response.data;
-				console.log(this.user);
-			});
+				.then(response => {
+					console.log(response.data);
+					this.user = response.data;
+					console.log(this.user);
+				});
 		},
 
 		getOrders () {
 			axios.get(`https://love-machine-app.herokuapp.com/orders`)
-			.then(response => {
-				console.log(response.data);
-				this.orders.push(...response.data);
-				console.log(this.orders);
-			});
+				.then(response => {
+					console.log(response.data);
+					this.orders.push(...response.data);
+					console.log(this.orders);
+				});
 		},
 
 		getUserOrders () {
 			axios.get(`https://love-machine-app.herokuapp.com/user_orders`)
-			.then(response => {
-				console.log(response.data);
-				this.userOrders.push(...response.data);
-				console.log(this.userOrders);
-			});
+				.then(response => {
+					console.log(response.data);
+					this.userOrders.push(...response.data);
+					console.log(this.userOrders);
+				});
 		},
 
 		addUserOrder (userOrder) {
-			axios.post(`https://love-machine-app.herokuapp.com/user_orders`, userOrder)
-			.then(response => {
-				console.log(response.data);
-				this.userOrders = response.data;
-				console.log(this.userOrders);
-			});
+			if(this.user.point >= userOrder.points) {
+				axios.post(`https://love-machine-app.herokuapp.com/set_points`, this.user.point - userOrder.points)
+					.then(response => {
+						console.log(response.data);
+						this.user = response.data;
+						console.log(this.user);
+
+						axios.post(`https://love-machine-app.herokuapp.com/user_orders`, userOrder)
+							.then(response => {
+								console.log(response.data);
+								this.userOrders = response.data;
+								console.log(this.userOrders);
+							});
+					});
+			}
 		},
 
 		removeOrder (order) {
 			axios.delete(`https://love-machine-app.herokuapp.com/orders/${order.id}`)
-			.then(response => {
-				console.log(response.data);
-				this.orders = response.data;
-				console.log(this.orders);
-			});
+				.then(response => {
+					console.log(response.data);
+					this.orders = response.data;
+					console.log(this.orders);
+				});
 		},
 
 		removeUserOrder (userOrder) {
 			axios.delete(`https://love-machine-app.herokuapp.com/user_orders/${userOrder.id}`)
-			.then(response => {
-				console.log(response.data);
-				this.userOrders = response.data;
-				console.log(this.userOrders);
-			});
+				.then(response => {
+					console.log(response.data);
+					this.userOrders = response.data;
+					console.log(this.userOrders);
+				});
+		},
+
+		setUserPoints () {
+			axios.post(`https://love-machine-app.herokuapp.com/set_points`, this.tempUserPoints)
+				.then(response => {
+					console.log(response.data);
+					this.user = response.data;
+					console.log(this.user);
+				});
 		},
 
 		add () {

@@ -37,19 +37,19 @@ app.get('/user', (req, res) => {
 	res.json(user);
 });
 app.post('/user', (req, res) => {
-	user = req.body;
+	user = req.body.user;
 	res.json(user);
 
 	saveData();
 });
-app.post('/set_points', (req, res) => {
-	user.points = req.body;
+app.post('/set_points/:points', (req, res) => {
+	user.points = req.params.points;
 	res.json(user);
 
 	saveData();
 });
-app.post('/set_name', (req, res) => {
-	user.name = req.body;
+app.post('/set_name/:name', (req, res) => {
+	user.name = req.params.name;
 	res.json(user);
 
 	saveData();
