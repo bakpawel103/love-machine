@@ -2,6 +2,17 @@ const express = require('express');
 const serveStatic = require('serve-static');
 var cors = require('cors');
 const path = require('path');
+const fs = require('fs');
+
+const port = process.env.PORT || 80;
+const dataJson = 'data.json';
+
+let rawdata = fs.readFileSync(dataJson);
+let parsedData = JSON.parse(rawdata);
+
+var orders = parsedData.orders;
+var userOrders = parsedData.userOrders;
+var user = parsedData.user;
 
 const app = express();
 
@@ -17,15 +28,6 @@ app.all('*', function(req, res, next) {
 
 app.use('/', serveStatic(path.join(__dirname, '/dist')));
 
-const port = process.env.PORT || 80;
-
-var orders = [];
-var userOrders = [];
-var user = {
-	name: "Julia",
-	points: 0
-}
-
 app.get('/', (req, res) => {
 	res.sendFile(path.join(__dirname, '/dist/index.html'))
 });
@@ -33,13 +35,23 @@ app.get('/', (req, res) => {
 app.get('/user', (req, res) => {
 	res.json(user);
 });
+app.post('/user', (req, res) => {
+	user = req.body.user;
+	res.json(user);
+
+	saveData();
+});
 app.post('/set_points', (req, res) => {
 	user.points = req.body.points;
 	res.json(user);
+
+	saveData();
 });
 app.post('/set_name', (req, res) => {
 	user.name = req.body.name;
 	res.json(user);
+
+	saveData();
 });
 
 app.get('/orders', (req, res) => {
@@ -51,6 +63,8 @@ app.get('/orders/:order_id', (req, res) => {
 app.post('/orders', (req, res) => {
 	orders.push({ id: orders.length, ...req.body });
 	res.json(orders);
+
+	saveData();
 });
 
 app.get('/user_orders', (req, res) => {
@@ -62,8 +76,23 @@ app.get('/user_orders/:user_order_id', (req, res) => {
 app.post('/user_orders', (req, res) => {
 	userOrders.push({ id: userOrders.length, ...req.body });
 	res.json(userOrders);
+
+	saveData();
 });
 
 app.listen(port, () => {
 	console.log(`app is listening on port: ${port}`);
 });
+
+var saveData = () => {
+	let data = JSON.stringify({
+		"user": user,
+		"orders": orders,
+		"userOrders": userOrders
+	}, null, 2);
+
+	fs.writeFile(dataJson, data, (err) => {
+		if (err) throw err;
+		console.log('User data written to file');
+	});
+}
