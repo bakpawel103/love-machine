@@ -33,6 +33,14 @@ app.get('/', (req, res) => {
 app.get('/user', (req, res) => {
 	res.json(user);
 });
+app.post('/set_points', (req, res) => {
+	user.points = req.body.points;
+	res.json(user);
+});
+app.post('/set_name', (req, res) => {
+	user.name = req.body.name;
+	res.json(user);
+});
 
 app.get('/orders', (req, res) => {
 	res.json(orders);
