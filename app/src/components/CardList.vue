@@ -17,7 +17,7 @@
             mdi-bookmark-plus-outline
           </v-icon>
         </v-btn>
-        <v-btn @click="remove(index)" icon>
+        <v-btn @click="remove(index, item)" icon>
           <v-icon>
             mdi-close
           </v-icon>
@@ -48,7 +48,8 @@ export default {
   },
 
   methods: {
-    remove (index) {
+    remove (index, item) {
+      this.$emit('removeItem', item);
       const newValue = [...this.value.slice(0, index), ...this.value.slice(index + 1)]
       this.$emit('input', newValue)
     },

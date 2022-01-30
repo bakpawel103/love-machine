@@ -24,7 +24,7 @@
 				<v-container fluid>
 					<v-row>
 						<v-col cols="12">
-							<card-list v-bind:add-icon="true" @addItem="addUserOrder" v-model="orders" #default="{ item }">
+							<card-list v-bind:add-icon="true" @addItem="addUserOrder" @removeItem="removeOrder" v-model="orders" #default="{ item }">
 								<v-row>
 									<v-col cols="12">
 										<v-text-field v-model="item.description" label="Description" hide-details />
@@ -54,7 +54,7 @@
 				<v-container fluid>
 					<v-row>
 						<v-col cols="12">
-							<card-list v-bind:add-icon="false" @addItem="addUserOrder" v-model="userOrders" #default="{ item }">
+							<card-list v-bind:add-icon="false" @addItem="addUserOrder" @removeItem="removeUserOrder" v-model="userOrders" #default="{ item }">
 								<v-row>
 									<v-col cols="12">
 										<v-text-field v-model="item.description" label="Description" hide-details />
@@ -138,6 +138,24 @@ export default {
 
 		addUserOrder (userOrder) {
 			axios.post(`https://love-machine-app.herokuapp.com/user_orders`, userOrder)
+			.then(response => {
+				console.log(response.data);
+				this.userOrders = response.data;
+				console.log(this.userOrders);
+			});
+		},
+
+		removeOrder (order) {
+			axios.delete(`https://love-machine-app.herokuapp.com/orders/${order.id}`)
+			.then(response => {
+				console.log(response.data);
+				this.orders = response.data;
+				console.log(this.orders);
+			});
+		},
+
+		removeUserOrder (userOrder) {
+			axios.delete(`https://love-machine-app.herokuapp.com/user_orders/${userOrder.id}`)
 			.then(response => {
 				console.log(response.data);
 				this.userOrders = response.data;
