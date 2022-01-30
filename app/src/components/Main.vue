@@ -1,106 +1,101 @@
 <template>
-	<v-container fluid>
-		<v-row>
-			<v-col cols="12">
-				<h1 style="text-align: center;">
-					{{ user.name }} | Points: {{ user.points }}
-				</h1>
-			</v-col>
-		</v-row>
-		<v-row>
-			<v-col cols="10">
-				<v-text-field v-model="tempUserPoints" label="Points to add" hide-details />
-			</v-col>
-			<v-col cols="2">
-				<v-btn @click="addUserPoints" text>
-					Add points
-        </v-btn>
-			</v-col>
-		</v-row>
-		<v-row>
-			<v-col cols="6">
-				<h2 style="text-align: center;">
-					Orders
-				</h2>
-			</v-col>
-			<v-col cols="6">
-				<h2 style="text-align: center;">
-					{{ user.name }}'s orders
-				</h2>
-			</v-col>
-		</v-row>
-		<v-row>
-			<v-col cols="6">
-				<v-container fluid>
-					<v-row>
-						<v-col cols="12">
-							<card-list v-bind:add-icon="true" @addItem="addUserOrder" @removeItem="removeOrder" v-model="orders" #default="{ item }">
-								<v-row>
-									<v-col cols="12">
-										<v-text-field v-model="item.description" label="Description" hide-details />
-									</v-col>
-								</v-row>
-								<v-row>
-									<v-col cols="12">
-										<v-text-field v-model="item.points" label="Points" hide-details />
-									</v-col>
-								</v-row>
-							</card-list>
-						</v-col>
-					</v-row>
-					<v-row>
-						<v-col cols="auto" class="py-0 mx-auto">
-							<v-btn @click="add" text>
-								<v-icon>
-									mdi-plus
-								</v-icon>
-								Add
-							</v-btn>
-						</v-col>
-					</v-row>
-				</v-container>
-			</v-col>
-			<v-col cols="6">
-				<v-container fluid>
-					<v-row>
-						<v-col cols="12">
-							<card-list v-bind:add-icon="false" @addItem="addUserOrder" @removeItem="removeUserOrder" v-model="userOrders" #default="{ item }">
-								<v-row>
-									<v-col cols="12">
-										<v-text-field v-model="item.description" label="Description" hide-details />
-									</v-col>
-								</v-row>
-								<v-row>
-									<v-col cols="12">
-										<v-text-field v-model="item.points" label="Points" hide-details />
-									</v-col>
-								</v-row>
-							</card-list>
-						</v-col>
-					</v-row>
-					<v-row>
-						<v-col cols="auto" class="py-0 mx-auto">
-							<v-btn @click="add" text>
-								<v-icon>
-									mdi-plus
-								</v-icon>
-								Add
-							</v-btn>
-						</v-col>
-					</v-row>
-				</v-container>
-			</v-col>
-		</v-row>
-	</v-container>
+	<div>
+		<v-container fluid>
+			<v-row>
+				<v-col cols="12">
+					<h1 style="text-align: center;">
+						{{ user.name }} | Points: {{ user.points }}
+					</h1>
+				</v-col>
+			</v-row>
+			<v-row>
+				<v-col cols="10">
+					<v-text-field v-model="tempUserPoints" label="Points to add" hide-details />
+				</v-col>
+				<v-col cols="2">
+					<v-btn @click="addUserPoints" text>
+						Add points
+					</v-btn>
+				</v-col>
+			</v-row>
+			<v-row>
+				<v-col cols="6">
+					<h2 style="text-align: center;">
+						Orders
+					</h2>
+				</v-col>
+				<v-col cols="6">
+					<h2 style="text-align: center;">
+						{{ user.name }}'s orders
+					</h2>
+				</v-col>
+			</v-row>
+			<v-row>
+				<v-col cols="6">
+					<v-container fluid>
+						<v-row>
+							<v-col cols="12">
+								<card-list v-bind:add-icon="true" @addItem="addUserOrder" @removeItem="removeOrder" v-model="orders" #default="{ item }">
+									<v-row>
+										<v-col cols="12">
+											<v-text-field v-model="item.description" label="Description" hide-details />
+										</v-col>
+									</v-row>
+									<v-row>
+										<v-col cols="12">
+											<v-text-field v-model="item.points" label="Points" hide-details />
+										</v-col>
+									</v-row>
+								</card-list>
+							</v-col>
+						</v-row>
+						<v-row>
+							<v-col cols="auto" class="py-0 mx-auto">
+								<v-btn @click="addOrder" text>
+									<v-icon>
+										mdi-plus
+									</v-icon>
+									Add
+								</v-btn>
+							</v-col>
+						</v-row>
+					</v-container>
+				</v-col>
+				<v-col cols="6">
+					<v-container fluid>
+						<v-row>
+							<v-col cols="12">
+								<card-list v-bind:add-icon="false" @addItem="addUserOrder" @removeItem="removeUserOrder" v-model="userOrders" #default="{ item }">
+									<v-row>
+										<v-col cols="12">
+											<v-text-field v-model="item.description" label="Description" hide-details />
+										</v-col>
+									</v-row>
+									<v-row>
+										<v-col cols="12">
+											<v-text-field v-model="item.points" label="Points" hide-details />
+										</v-col>
+									</v-row>
+								</card-list>
+							</v-col>
+						</v-row>
+					</v-container>
+				</v-col>
+			</v-row>
+		</v-container>
+		<AddOrderModal v-show="isModalVisible" @close="closeModal" @addNewOrder="addNewOrder"/>
+	</div>
 </template>
 
 <script>
 import CardList from '@/components/CardList';
+import AddOrderModal from '@/components/AddOrderModal';
 import axios from 'axios';
 
 export default {
 	components: {
-		CardList
+		CardList,
+		AddOrderModal
 	},
 
 	created () {
@@ -118,7 +113,8 @@ export default {
 		},
 		tempUserPoints: 0,
 		orders: [ ],
-		userOrders: [ ]
+		userOrders: [ ],
+		isModalVisible: false
 	}),
 
 	methods: {
@@ -150,8 +146,9 @@ export default {
 		},
 
 		addUserOrder (userOrder) {
-			if(this.user.point >= userOrder.points) {
-				axios.post(`https://love-machine-app.herokuapp.com/set_points`, this.user.point - userOrder.points)
+			console.log(this.user.points, userOrder.points);
+			if(this.user.points >= userOrder.points) {
+				axios.post(`https://love-machine-app.herokuapp.com/set_points/${parseInt(this.user.points) - parseInt(userOrder.points)}`)
 					.then(response => {
 						console.log(response.data);
 						this.user = response.data;
@@ -194,8 +191,26 @@ export default {
 				});
 		},
 
-		add () {
+		addOrder () {
+			this.isModalVisible = true;
+		},
 
+		addNewUserOrder () {
+			this.isModalVisible = true;
+		},
+
+		closeModal () {
+			this.isModalVisible = false;
+		},
+
+		addNewOrder (newOrder) {
+			this.isModalVisible = false;
+			axios.post(`https://love-machine-app.herokuapp.com/orders`, newOrder)
+				.then(response => {
+					console.log(response.data);
+					this.orders = response.data;
+					console.log(this.orders);
+				});
 		}
 	}
 }
