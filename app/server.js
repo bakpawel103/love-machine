@@ -48,6 +48,12 @@ app.post('/set_points/:points', (req, res) => {
 
 	saveData();
 });
+app.post('/add_points/:points', (req, res) => {
+	user.points += req.params.points;
+	res.json(user);
+
+	saveData();
+});
 app.post('/set_name/:name', (req, res) => {
 	user.name = req.params.name;
 	res.json(user);

@@ -9,10 +9,10 @@
 		</v-row>
 		<v-row>
 			<v-col cols="10">
-				<v-text-field v-model="tempUserPoints" label="Description" hide-details />
+				<v-text-field v-model="tempUserPoints" label="Points to add" hide-details />
 			</v-col>
 			<v-col cols="2">
-				<v-btn @click="setUserPoints" text>
+				<v-btn @click="addUserPoints" text>
 					Add points
         </v-btn>
 			</v-col>
@@ -185,8 +185,8 @@ export default {
 				});
 		},
 
-		setUserPoints () {
-			axios.post(`https://love-machine-app.herokuapp.com/set_points`, this.tempUserPoints)
+		addUserPoints () {
+			axios.post(`https://love-machine-app.herokuapp.com/add_points/${this.tempUserPoints}`)
 				.then(response => {
 					console.log(response.data);
 					this.user = response.data;
