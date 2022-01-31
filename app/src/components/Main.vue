@@ -91,6 +91,7 @@
 import CardList from '@/components/CardList';
 import AddOrderModal from '@/components/AddOrderModal';
 import axios from 'axios';
+import { globalVars } from '../../globalVars';
 
 export default {
 	components: {
@@ -119,7 +120,7 @@ export default {
 
 	methods: {
 		getUser () {
-			axios.get(`https://love-machine-app.herokuapp.com/user`)
+			axios.get(`${globalVars.serverUrl}/user`)
 				.then(response => {
 					console.log(response.data);
 					this.user = response.data;
@@ -128,7 +129,7 @@ export default {
 		},
 
 		getOrders () {
-			axios.get(`https://love-machine-app.herokuapp.com/orders`)
+			axios.get(`${globalVars.serverUrl}/orders`)
 				.then(response => {
 					console.log(response.data);
 					this.orders.push(...response.data);
@@ -137,7 +138,7 @@ export default {
 		},
 
 		getUserOrders () {
-			axios.get(`https://love-machine-app.herokuapp.com/user_orders`)
+			axios.get(`${globalVars.serverUrl}/user_orders`)
 				.then(response => {
 					console.log(response.data);
 					this.userOrders.push(...response.data);
@@ -148,13 +149,13 @@ export default {
 		addUserOrder (userOrder) {
 			console.log(this.user.points, userOrder.points);
 			if(this.user.points >= userOrder.points) {
-				axios.post(`https://love-machine-app.herokuapp.com/set_points/${parseInt(this.user.points) - parseInt(userOrder.points)}`)
+				axios.post(`${globalVars.serverUrl}/set_points/${parseInt(this.user.points) - parseInt(userOrder.points)}`)
 					.then(response => {
 						console.log(response.data);
 						this.user = response.data;
 						console.log(this.user);
 
-						axios.post(`https://love-machine-app.herokuapp.com/user_orders`, userOrder)
+						axios.post(`${globalVars.serverUrl}/user_orders`, userOrder)
 							.then(response => {
 								console.log(response.data);
 								this.userOrders = response.data;
@@ -165,7 +166,7 @@ export default {
 		},
 
 		removeOrder (order) {
-			axios.delete(`https://love-machine-app.herokuapp.com/orders/${order.id}`)
+			axios.delete(`${globalVars.serverUrl}/orders/${order.id}`)
 				.then(response => {
 					console.log(response.data);
 					this.orders = response.data;
@@ -174,7 +175,7 @@ export default {
 		},
 
 		removeUserOrder (userOrder) {
-			axios.delete(`https://love-machine-app.herokuapp.com/user_orders/${userOrder.id}`)
+			axios.delete(`${globalVars.serverUrl}/user_orders/${userOrder.id}`)
 				.then(response => {
 					console.log(response.data);
 					this.userOrders = response.data;
@@ -183,7 +184,7 @@ export default {
 		},
 
 		addUserPoints () {
-			axios.post(`https://love-machine-app.herokuapp.com/add_points/${this.tempUserPoints}`)
+			axios.post(`${globalVars.serverUrl}/add_points/${this.tempUserPoints}`)
 				.then(response => {
 					console.log(response.data);
 					this.user = response.data;
@@ -205,7 +206,7 @@ export default {
 
 		addNewOrder (newOrder) {
 			this.isModalVisible = false;
-			axios.post(`https://love-machine-app.herokuapp.com/orders`, newOrder)
+			axios.post(`${globalVars.serverUrl}/orders`, newOrder)
 				.then(response => {
 					console.log(response.data);
 					this.orders = response.data;
@@ -217,4 +218,5 @@ export default {
 </script>
 
 <style scoped>
+
 </style>
