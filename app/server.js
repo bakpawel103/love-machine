@@ -43,10 +43,9 @@ try {
 		res.sendFile(path.join(__dirname, '/dist/index.html'))
 	});
 
-	app.get('/user', (req, res) => {
-		let userId = 'ee87a2cb-881a-4da1-a399-41b3f30d3e2c';
-
-		pool.query('select * from users u where u.id like $1', [userId], (error, results) => {
+	// User
+	app.post('/user', (req, res) => {
+		pool.query('INSERT INTO users ("id", "name", "points") VALUES ($1, $2, $3);', [uuid.v4(), req.body.name, req.body.points], (error, results) => {
 			if(error) {
 				throw error;
 			}
@@ -54,87 +53,136 @@ try {
 			res.status(200).json(results.rows);
 		});
 	});
-	app.post('/user', (req, res) => {
-		data.user = req.body.user;
+	app.get('/user/:user_id', (req, res) => {
+		pool.query('select * from users where users.id like $1', [req.params.user_id], (error, results) => {
+			if(error) {
+				throw error;
+			}
 
-		saveData();
-
-		res.json(data.user);
+			res.status(200).json(results.rows);
+		});
 	});
-	app.post('/set_points/:points', (req, res) => {
-		data.user.points = parseInt(req.params.points);
+	app.post('/user/:user_id/set_points/:points', (req, res) => {
+		if(req.params.points < 0) {
+			res.status(400);
+			return;
+		}
+		pool.query('update users set points = $1 where id = $2', [parseInt(req.params.points), req.params.user_id], (error, results) => {
+			if(error) {
+				throw error;
+			}
 
-		saveData();
-
-		res.json(data.user);
+			res.status(200).json(results.rows);
+		});
 	});
-	app.post('/add_points/:points', (req, res) => {
-		data.user.points = parseInt(data.user.points) + parseInt(req.params.points);
+	app.post('/user/:user_id/add_points/:points', (req, res) => {
+		pool.query('select * from users u where u.id like $1', [req.params.user_id], (error, results) => {
+			if(error) {
+				throw error;
+			}
+			if(parseInt(req.params.points) + parseInt(results.rows[0].points) < 0) {
+				res.status(400);
+				return;
+			}
 
-		saveData();
-
-		res.json(data.user);
+			pool.query('update users set points = $1 where id = $2', [parseInt(req.params.points) + parseInt(results.rows[0].points), req.params.user_id], (error2, results2) => {
+				if(error) {
+					throw error;
+				}
+	
+				res.status(200).json(results2.rows);
+			});
+		});
 	});
-	app.post('/set_name/:name', (req, res) => {
-		data.user.name = req.params.name;
+	app.post('/user/:user_id/set_name/:name', (req, res) => {
+		pool.query('update users set name = $1 where id = $2', [req.params.name, req.params.user_id], (error, results) => {
+			if(error) {
+				throw error;
+			}
 
-		saveData();
-
-		res.json(data.user);
-	});
-
-	app.get('/orders', (req, res) => {
-		res.json(data.orders);
-	});
-	app.get('/orders/:order_id', (req, res) => {
-		res.json(data.orders.find(order => order.id == req.params.order_id));
-	});
-	app.post('/orders', (req, res) => {
-		console.log('test', data);
-		data.orders.push({ id: uuid.v4(), ...req.body });
-		console.log('test', data);
-
-		saveData();
-		
-		res.json(data.orders);
-	});
-	app.delete('/orders/:order_id', (req, res) => {
-		data.orders.splice(data.orders.findIndex(order => order.id === req.params.order_id), 1);
-
-		saveData();
-
-		res.json(data.orders);
+			res.status(200).json(results.rows);
+		});
 	});
 
-	app.get('/user_orders', (req, res) => {
-		res.json(data.userOrders);
+	// Orders
+	app.get('/user/:user_id/orders', (req, res) => {
+		pool.query('select orders.* from orders inner join users on orders.user_id = users.id where users.id = $1', [req.params.user_id], (error, results) => {
+			if(error) {
+				throw error;
+			}
+
+			res.status(200).json(results.rows);
+		});
 	});
-	app.get('/user_orders/:user_order_id', (req, res) => {
-		res.json(data.userOrders.find(userOrder => userOrder.id == req.params.user_order_id));
+	app.get('/user/:user_id/orders/:order_id', (req, res) => {
+		pool.query('select orders.* from orders inner join users on orders.user_id = users.id where users.id = $1 and orders.id = $2', [req.params.user_id, req.params.order_id], (error, results) => {
+			if(error) {
+				throw error;
+			}
+
+			res.status(200).json(results.rows);
+		});
 	});
-	app.post('/user_orders', (req, res) => {
-		console.log(req.body);
-		data.userOrders.push({ id: uuid.v4(), ...req.body });
+	app.delete('/user/:user_id/orders/:order_id', (req, res) => {
+		pool.query('delete from orders where orders.user_id = $1 and orders.id = $2', [req.params.user_id, req.params.order_id], (error, results) => {
+			if(error) {
+				throw error;
+			}
 
-		saveData();
-
-		res.json(data.userOrders);
+			res.status(200).json(results.rows);
+		});
 	});
-	app.delete('/user_orders/:user_order_id', (req, res) => {
-		data.userOrders.splice(data.userOrders.findIndex(userOrder => userOrder.id === req.params.user_order_id), 1);
+	app.post('/user/:user_id/orders', (req, res) => {
+		pool.query('INSERT INTO orders ("id", "description", "points", "user_id") VALUES ($1, $2, $3, $4);', [uuid.v4(), req.body.description, req.body.points, req.params.user_id], (error, results) => {
+			if(error) {
+				throw error;
+			}
 
-		saveData();
+			res.status(200).json(results.rows);
+		});
+	});
 
-		res.json(data.userOrders);
+	// User orders
+	app.get('/user/:user_id/user_orders', (req, res) => {
+		pool.query('select user_orders.* from user_orders inner join users on user_orders.user_id = users.id where users.id = $1', [req.params.user_id], (error, results) => {
+			if(error) {
+				throw error;
+			}
+
+			res.status(200).json(results.rows);
+		});
+	});
+	app.get('/user/:user_id/user_orders/:user_order_id', (req, res) => {
+		pool.query('select user_orders.* from user_orders inner join users on user_orders.user_id = users.id where users.id = $1 and user_orders.id = $2', [req.params.user_id, req.params.user_order_id], (error, results) => {
+			if(error) {
+				throw error;
+			}
+
+			res.status(200).json(results.rows);
+		});
+	});
+	app.delete('/user/:user_id/user_orders/:user_order_id', (req, res) => {
+		pool.query('delete from user_orders where user_orders.user_id = $1 and user_orders.id = $2', [req.params.user_id, req.params.user_order_id], (error, results) => {
+			if(error) {
+				throw error;
+			}
+
+			res.status(200).json(results.rows);
+		});
+	});
+	app.post('/user/:user_id/user_orders', (req, res) => {
+		pool.query('INSERT INTO user_orders ("id", "description", "points", "user_id") VALUES ($1, $2, $3, $4);', [uuid.v4(), req.body.description, req.body.points, req.params.user_id], (error, results) => {
+			if(error) {
+				throw error;
+			}
+
+			res.status(200).json(results.rows);
+		});
 	});
 
 	app.listen(port, () => {
 		console.log(`app is listening on port: ${port}`);
 	});
-
-	var saveData = () => {
-		
-	}
 } catch(error) {
 	console.log(error);
 }

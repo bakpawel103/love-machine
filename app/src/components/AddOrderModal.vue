@@ -53,7 +53,9 @@
 			},
 
 			add() {
-				this.$emit('addNewOrder', this.order);
+				if(this.order.points >= 0) {
+					this.$emit('addNewOrder', this.order);
+				}
 			}
 		},
 	};

@@ -100,11 +100,12 @@ export default {
 	},
 
 	created () {
-		this.getUser();
-		this.getOrders();
-		this.getUserOrders();
+		this.getUser(() => {
+			this.getOrders();
+			this.getUserOrders();
 
-		this.tempUserPoints = this.user.points;
+			this.tempUserPoints = this.user.points;
+		});
 	},
 
 	data: () => ({
@@ -119,76 +120,64 @@ export default {
 	}),
 
 	methods: {
-		getUser () {
-			axios.get(`${globalVars.serverUrl}/user`)
+		getUser (callback) {
+			axios.get(`${globalVars.serverUrl}/user/${globalVars.defaultUserId}`)
 				.then(response => {
-					console.log(response.data);
-					this.user = response.data;
-					console.log(this.user);
+					this.user = response.data[0];
+
+					callback();
 				});
 		},
 
 		getOrders () {
-			axios.get(`${globalVars.serverUrl}/orders`)
+			axios.get(`${globalVars.serverUrl}/user/${globalVars.defaultUserId}/orders`)
 				.then(response => {
-					console.log(response.data);
-					this.orders.push(...response.data);
-					console.log(this.orders);
+					this.orders = response.data;
 				});
 		},
 
 		getUserOrders () {
-			axios.get(`${globalVars.serverUrl}/user_orders`)
+			axios.get(`${globalVars.serverUrl}/user/${globalVars.defaultUserId}/user_orders`)
 				.then(response => {
-					console.log(response.data);
-					this.userOrders.push(...response.data);
-					console.log(this.userOrders);
+					this.userOrders = response.data;
 				});
 		},
 
 		addUserOrder (userOrder) {
 			console.log(this.user.points, userOrder.points);
-			if(this.user.points >= userOrder.points) {
-				axios.post(`${globalVars.serverUrl}/set_points/${parseInt(this.user.points) - parseInt(userOrder.points)}`)
-					.then(response => {
-						console.log(response.data);
-						this.user = response.data;
-						console.log(this.user);
-
-						axios.post(`${globalVars.serverUrl}/user_orders`, userOrder)
-							.then(response => {
-								console.log(response.data);
-								this.userOrders = response.data;
-								console.log(this.userOrders);
-							});
+			if(this.user.points > 0 && this.user.points >= userOrder.points) {
+				axios.post(`${globalVars.serverUrl}/user/${globalVars.defaultUserId}/set_points/${parseInt(this.user.points) - parseInt(userOrder.points)}`)
+					.then(() => {
+						this.getUser(() => {
+							axios.post(`${globalVars.serverUrl}/user/${globalVars.defaultUserId}/user_orders`, userOrder)
+								.then(() => {
+									this.getUserOrders();
+								});
+						});
 					});
 			}
 		},
 
 		removeOrder (order) {
-			axios.delete(`${globalVars.serverUrl}/orders/${order.id}`)
-				.then(response => {
-					console.log(response.data);
-					this.orders = response.data;
-					console.log(this.orders);
+			axios.delete(`${globalVars.serverUrl}/user/${globalVars.defaultUserId}/orders/${order.id}`)
+				.then(() => {
+					this.getOrders();
 				});
 		},
 
 		removeUserOrder (userOrder) {
-			axios.delete(`${globalVars.serverUrl}/user_orders/${userOrder.id}`)
-				.then(response => {
-					console.log(response.data);
-					this.userOrders = response.data;
-					console.log(this.userOrders);
+			axios.delete(`${globalVars.serverUrl}/user/${globalVars.defaultUserId}/user_orders/${userOrder.id}`)
+				.then(() => {
+					this.getUserOrders();
 				});
 		},
 
 		addUserPoints () {
-			axios.post(`${globalVars.serverUrl}/add_points/${this.tempUserPoints}`)
-				.then(response => {
-					console.log(response.data);
-					this.user = response.data;
-					console.log(this.user);
+			axios.post(`${globalVars.serverUrl}/user/${globalVars.defaultUserId}/add_points/${this.tempUserPoints}`)
+				.then(() => {
+					this.getUser(() => {
+
+					});
 				});
 		},
 
@@ -206,11 +195,9 @@ export default {
 
 		addNewOrder (newOrder) {
 			this.isModalVisible = false;
-			axios.post(`${globalVars.serverUrl}/orders`, newOrder)
-				.then(response => {
-					console.log(response.data);
-					this.orders = response.data;
-					console.log(this.orders);
+			axios.post(`${globalVars.serverUrl}/user/${globalVars.defaultUserId}/orders`, newOrder)
+				.then(() => {
+					this.getOrders();
 				});
 		}
 	}
