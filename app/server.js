@@ -7,11 +7,10 @@ const uuid = require('uuid');
 const Pool = require('pg').Pool;
 
 const pool = new Pool({
-  user: 'iszlqxcjayzfnq',
-  host: 'ec2-52-31-201-170.eu-west-1.compute.amazonaws.com',
-  database: 'dbrp2248vaddfo',
-  password: '53065aeffbaf5d7973ca1d73f5e4644df624f332256abfaba9a1a4a2b03952ee',
-  port: 5432,
+  connectionString: 'postgres://iszlqxcjayzfnq:53065aeffbaf5d7973ca1d73f5e4644df624f332256abfaba9a1a4a2b03952ee@ec2-52-31-201-170.eu-west-1.compute.amazonaws.com:5432/dbrp2248vaddfo',
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
 const port = process.env.PORT || 80;
