@@ -22,7 +22,7 @@
         <slot :item="item" :index="index" />
       </v-card-text>
       <v-card-actions>
-        <v-btn class="text-right" color="white" v-if="addIcon" text @click="add(item)">Add to my orders</v-btn>
+        <v-btn outlined elevation="2" v-if="addIcon" text @click="add(item)">Order</v-btn>
       </v-card-actions>
     </v-card>
   </transition-group>

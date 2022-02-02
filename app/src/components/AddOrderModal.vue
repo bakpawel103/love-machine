@@ -2,8 +2,6 @@
 	<transition name="modal-fade">
 		<div class="modal-backdrop">
 			<div class="modal" role="dialog">
-				<slot name="header" style="text-align: center;">Add new order</slot>
-
 				<slot name="body">
 					<v-container fluid>
 						<v-row>
@@ -23,10 +21,10 @@
 					<v-container fluid>
 						<v-row>
 							<v-col cols="6">
-								<v-btn @click="close" color="blue-grey" text>Close</v-btn>
+								<v-btn outlined elevation="2" @click="close" color="white" text>Close</v-btn>
 							</v-col>
 							<v-col cols="6">
-								<v-btn @click="add" color="success" text>Add</v-btn>
+								<v-btn outlined elevation="2" @click="add" color="white" text>Add</v-btn>
 							</v-col>
 						</v-row>
 					</v-container>
@@ -75,7 +73,7 @@
 	}
 
 	.modal {
-		background: #FFFFFF;
+		background: #e91e63;
 		box-shadow: 2px 2px 20px 1px;
 		overflow-x: auto;
 		display: flex;
@@ -115,20 +113,6 @@
 		font-weight: bold;
 		color: #4AAE9B;
 		background: transparent;
-	}
-
-	.btn-grey {
-		color: white;
-		background: #606161;
-		border: 1px solid #4d4e4e;
-		border-radius: 2px;
-	}
-
-	.btn-green {
-		color: white;
-		background: #4AAE9B;
-		border: 1px solid #4AAE9B;
-		border-radius: 2px;
 	}
 
 	.modal-fade-enter,

@@ -1,35 +1,37 @@
 <template>
 	<div>
-		<v-app-bar color="pink" elevation="7">
+		<v-toolbar color="pink" elevation="7">
 			<v-container fluid>
 				<v-row>
-					<v-col cols="8">
-						<h1 style="text-align: center;">
+					<v-col cols="12">
+						<h4 style="text-align: center;">
 							{{ user.name }} | Points: {{ user.points }}
-						</h1>
-					</v-col>
-					<v-col cols="2">
-						<v-text-field v-model="tempUserPoints" hide-details />
-					</v-col>
-					<v-col cols="2">
-						<v-btn @click="addUserPoints" text>
-							Add points
-						</v-btn>
+						</h4>
 					</v-col>
 				</v-row>
 			</v-container>
-		</v-app-bar>
+		</v-toolbar>
 		<v-container fluid>
 			<v-row>
 				<v-col cols="6">
-					<h2 style="text-align: center;">
-						Orders
-					</h2>
+					<v-text-field v-model="tempUserPoints" hide-details />
 				</v-col>
 				<v-col cols="6">
-					<h2 style="text-align: center;">
+					<v-btn outlined elevation="2" @click="addUserPoints" text>
+						Add points
+					</v-btn>
+				</v-col>
+			</v-row>
+			<v-row>
+				<v-col cols="6">
+					<h3 style="text-align: center;">
+						Orders
+					</h3>
+				</v-col>
+				<v-col cols="6">
+					<h3 style="text-align: center;">
 						{{ user.name }}'s orders
-					</h2>
+					</h3>
 				</v-col>
 			</v-row>
 			<v-row>
@@ -40,7 +42,7 @@
 								<card-list v-bind:add-icon="true" @addItem="addUserOrder" @removeItem="removeOrder" v-model="orders" #default="{ item }">
 									<v-row>
 										<v-col cols="12">
-											<v-text-field color="red" v-model="item.description" label="Description" hide-details />
+											<v-textarea v-model="item.description" label="Description" hide-details />
 										</v-col>
 									</v-row>
 									<v-row>
@@ -53,7 +55,7 @@
 						</v-row>
 						<v-row>
 							<v-col cols="auto" class="py-0 mx-auto">
-								<v-btn @click="addOrder" text>
+								<v-btn outlined elevation="2" @click="addOrder" text>
 									<v-icon>
 										mdi-plus
 									</v-icon>
@@ -70,7 +72,7 @@
 								<card-list v-bind:add-icon="false" @addItem="addUserOrder" @removeItem="removeUserOrder" v-model="userOrders" #default="{ item }">
 									<v-row>
 										<v-col cols="12">
-											<v-text-field v-model="item.description" label="Description" hide-details />
+											<v-textarea v-model="item.description" label="Description" hide-details />
 										</v-col>
 									</v-row>
 									<v-row>
