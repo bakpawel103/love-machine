@@ -4,9 +4,9 @@
 			<v-container fluid>
 				<v-row>
 					<v-col cols="12">
-						<h4 style="text-align: center;">
-							{{ user.name }} | Points: {{ user.points }}
-						</h4>
+						<h3 style="text-align: center;">
+							{{ user.name }}'s points: {{ user.points }}
+						</h3>
 					</v-col>
 				</v-row>
 			</v-container>
