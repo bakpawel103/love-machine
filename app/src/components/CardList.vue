@@ -1,6 +1,6 @@
 <template>
   <transition-group name="list" tag="div">
-    <v-card v-for="(item, index) in value" :key="item[itemId]" outlined class="mt-3">
+    <v-card v-for="(item, index) in value" :key="item[itemId]" outlined class="mt-3" elevation="10" color="pink">
       <v-card-title class="justify-end pb-0">
         <v-btn :disabled="index + 1 >= value.length" @click="down(index)" icon>
           <v-icon>
@@ -12,11 +12,6 @@
             mdi-arrow-up
           </v-icon>
         </v-btn>
-        <v-btn v-if="addIcon" @click="add(item)" icon>
-          <v-icon>
-            mdi-bookmark-plus-outline
-          </v-icon>
-        </v-btn>
         <v-btn @click="remove(index, item)" icon>
           <v-icon>
             mdi-close
@@ -26,6 +21,9 @@
       <v-card-text>
         <slot :item="item" :index="index" />
       </v-card-text>
+      <v-card-actions>
+        <v-btn class="text-right" color="white" v-if="addIcon" text @click="add(item)">Add to my orders</v-btn>
+      </v-card-actions>
     </v-card>
   </transition-group>
 </template>

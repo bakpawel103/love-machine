@@ -1,23 +1,25 @@
 <template>
 	<div>
+		<v-app-bar color="pink" elevation="7">
+			<v-container fluid>
+				<v-row>
+					<v-col cols="8">
+						<h1 style="text-align: center;">
+							{{ user.name }} | Points: {{ user.points }}
+						</h1>
+					</v-col>
+					<v-col cols="2">
+						<v-text-field v-model="tempUserPoints" hide-details />
+					</v-col>
+					<v-col cols="2">
+						<v-btn @click="addUserPoints" text>
+							Add points
+						</v-btn>
+					</v-col>
+				</v-row>
+			</v-container>
+		</v-app-bar>
 		<v-container fluid>
-			<v-row>
-				<v-col cols="12">
-					<h1 style="text-align: center;">
-						{{ user.name }} | Points: {{ user.points }}
-					</h1>
-				</v-col>
-			</v-row>
-			<v-row>
-				<v-col cols="10">
-					<v-text-field v-model="tempUserPoints" label="Points to add" hide-details />
-				</v-col>
-				<v-col cols="2">
-					<v-btn @click="addUserPoints" text>
-						Add points
-					</v-btn>
-				</v-col>
-			</v-row>
 			<v-row>
 				<v-col cols="6">
 					<h2 style="text-align: center;">
@@ -38,7 +40,7 @@
 								<card-list v-bind:add-icon="true" @addItem="addUserOrder" @removeItem="removeOrder" v-model="orders" #default="{ item }">
 									<v-row>
 										<v-col cols="12">
-											<v-text-field v-model="item.description" label="Description" hide-details />
+											<v-text-field color="red" v-model="item.description" label="Description" hide-details />
 										</v-col>
 									</v-row>
 									<v-row>
@@ -205,5 +207,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>
