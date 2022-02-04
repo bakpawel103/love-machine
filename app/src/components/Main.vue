@@ -205,7 +205,7 @@ export default {
 		},
 
 		redeemOrder (order) {
-			axios.get(`${globalVars.serverUrl}/user/${globalVars.defaultUserId}/user_orders/${order.id}`)
+			axios.get(`${globalVars.serverUrl}/user/${globalVars.defaultUserId}/user_orders/${order.id}/redeem`)
 				.then(response => {
 					console.log(response.data);
 				});

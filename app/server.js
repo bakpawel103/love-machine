@@ -194,9 +194,7 @@ try {
 			if(errorUser) {
 				throw errorUser;
 			}
-
 			
-
 			pool.query('select user_orders.* from user_orders inner join users on user_orders.user_id = users.id where users.id = $1 and user_orders.id = $2', [req.params.user_id, req.params.user_order_id], (errorUserOrder, resultsUserOrder) => {
 				if(errorUserOrder) {
 					throw errorUserOrder;
