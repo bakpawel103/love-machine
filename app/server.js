@@ -6,6 +6,8 @@ const uuid = require('uuid');
 
 const client  = require('twilio')('AC2cee8b14d4d65706b7f80bccfb9ddc3f', 'bd1a23897d9ff547136efd23842f24c9');
 
+const numbers = [ '+48730600933', '+48726085232' ];
+
 const Pool = require('pg').Pool;
 
 const pool = new Pool({
@@ -186,23 +188,19 @@ try {
 
 				var message = `${resultsUser.rows[0].name} redeemed order "${resultsUserOrder.rows[0].description}"`;
 
-				client.messages.create({
-					to: '+48730600933',
-					from: '+19036009237', 
-					body: message
-				  })
-				  .then((response) => {
-					client.messages.create({
-						to: '+48726085232',
-						from: '+19036009237', 
-						body: message
-					  })
-					  .then((response2) => {
-						  res.status(200).json(response2);
-					  })
-					  .done();
-				  })
-				  .done();
+				Promise.all(
+					numbers.map(number => {
+						return twilio.messages.create({
+							to: number,
+							from: '+19036009237',
+							body: message
+						});
+					})
+				)
+				.then(messages => {
+					res.send(200).json(messages);
+				})
+				.catch(err => console.error(err));
 	
 				pool.query('delete from user_orders where user_orders.user_id = $1 and user_orders.id = $2', [req.params.user_id, req.params.user_order_id], (errorDelete, resultsDelete) => {
 					if(errorDelete) {
