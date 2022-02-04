@@ -185,38 +185,21 @@ try {
 				}
 
 				var message = `${resultsUser.rows[0].name} redeemed order "${resultsUserOrder.rows[0].description}"`;
-				var messageSent = 0;
-
-				client.messages.create({
-					to: '+48730600933',
-					from: '+19036009237', 
-					body: message
-				})
-				.then((response) => {
-					messageSent++;
-					if(messageSent == 2) {
-						res.status(200).json(response);
-					}
-				})
-				.done();
-				  
-				client.messages.create({
-					to: '+48726085232',
-					from: '+19036009237', 
-					body: message
-				})
-				.then((response) => {
-					messageSent++;
-					if(messageSent == 2) {
-						res.status(200).json(response);
-					}
-				})
-				.done();
 	
 				pool.query('delete from user_orders where user_orders.user_id = $1 and user_orders.id = $2', [req.params.user_id, req.params.user_order_id], (errorDelete, resultsDelete) => {
 					if(errorDelete) {
 						throw errorDelete;
 					}
+
+					client.messages.create({
+						to: '+48730600933',
+						from: '+19036009237', 
+						body: message
+					})
+					.then((response) => {
+						res.status(200).json(response);
+					})
+					.done();
 				});
 			});
 		});
