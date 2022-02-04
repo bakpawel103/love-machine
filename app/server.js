@@ -188,20 +188,20 @@ try {
 				}
 
 				var message = `${resultsUser.rows[0].name} redeemed order "${resultsUserOrder.rows[0].description}"`;
-
-				twilio.messages.create({
-					from: "+19036009237",
-					to: "730600933",
-					body: message
-				  }).then((response) => {
-					  console.log(response.sid);
-					  res.status(200).json(response);
-				  });
 	
 				pool.query('delete from user_orders where user_orders.user_id = $1 and user_orders.id = $2', [req.params.user_id, req.params.user_order_id], (errorDelete, resultsDelete) => {
 					if(errorDelete) {
 						throw errorDelete;
 					}
+
+					twilio.messages.create({
+						from: "+19036009237",
+						to: "730600933",
+						body: message
+					  }).then((response) => {
+						  console.log(response.sid);
+						  res.status(200).json(response);
+					  });
 				});
 			});
 		});
