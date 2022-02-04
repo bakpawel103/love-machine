@@ -3,6 +3,7 @@ const serveStatic = require('serve-static');
 const cors = require('cors');
 const path = require('path');
 const uuid = require('uuid');
+const messagebird = require('messagebird')('7PdjLVNfubHx7wvlUnQYOKffd');
 
 const Pool = require('pg').Pool;
 
@@ -12,6 +13,14 @@ const pool = new Pool({
     rejectUnauthorized: false
   }
 });
+
+var params = {
+	'originator': 'TestMessage',
+	'recipients': [
+		'+48730600933'
+	],
+	'body': 'This is a test message'
+};
 
 const port = process.env.PORT || 80;
 
@@ -177,6 +186,45 @@ try {
 			}
 
 			res.status(200).json(results.rows);
+		});
+	});
+
+	app.post('/user/:user_id/user_orders/:user_order_id/redeem', (req, res) => {
+		pool.query('select * from users where users.id like $1', [req.params.user_id], (errorUser, resultsUser) => {
+			if(errorUser) {
+				throw errorUser;
+			}
+
+			
+
+			pool.query('select user_orders.* from user_orders inner join users on user_orders.user_id = users.id where users.id = $1 and user_orders.id = $2', [req.params.user_id, req.params.user_order_id], (errorUserOrder, resultsUserOrder) => {
+				if(errorUserOrder) {
+					throw errorUserOrder;
+				}			
+	
+				res.status(200).json(resultsUserOrder.rows);
+
+				var message = `${resultsUser.rows[0].name} redeemed order "${resultsUserOrder.rows[0].description}"`;
+
+				messagebird.messages.create({
+					'originator': 'TestMessage',
+					'recipients': [ '+48730600933' ],
+					'body': message
+				}, (err, response) => {
+					if (err) {
+						return console.log(err);
+					}
+					console.log(response);
+				});
+	
+				pool.query('delete from user_orders where user_orders.user_id = $1 and user_orders.id = $2', [req.params.user_id, req.params.user_order_id], (errorDelete, resultsDelete) => {
+					if(errorDelete) {
+						throw errorDelete;
+					}
+		
+					res.status(200).json(resultsDelete.rows);
+				});
+			});
 		});
 	});
 

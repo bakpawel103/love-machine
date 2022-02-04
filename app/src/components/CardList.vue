@@ -22,7 +22,10 @@
         <slot :item="item" :index="index" />
       </v-card-text>
       <v-card-actions>
-        <v-btn outlined elevation="2" v-if="addIcon" text @click="add(item)">Order</v-btn>
+        <v-btn outlined elevation="2" v-if="addOrderButtonVisibility" text @click="addOrder(item)">Order</v-btn>
+      </v-card-actions>
+      <v-card-actions>
+        <v-btn outlined elevation="2" v-if="redeemOrderButtonVisibility" text @click="redeemOrder(item)">Redeem</v-btn>
       </v-card-actions>
     </v-card>
   </transition-group>
@@ -37,7 +40,8 @@ export default {
       default: () => []
     },
 
-    addIcon: Boolean,
+    addOrderButtonVisibility: Boolean,
+    redeemOrderButtonVisibility: Boolean,
 
     itemId: {
       type: String,
@@ -66,8 +70,12 @@ export default {
       this.$emit('input', newValue)
     },
 
-    add (item) {
+    addOrder (item) {
       this.$emit('addItem', item);
+    },
+
+    redeemOrder(item) {
+      this.$emit('redeemItem', item);
     }
   }
 }
