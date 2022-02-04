@@ -206,10 +206,9 @@ export default {
 
 		redeemOrder (order) {
 			axios.post(`${globalVars.serverUrl}/user/${globalVars.defaultUserId}/user_orders/${order.id}/redeem`)
-				.then(response => {
-					console.log(response.data);
+				.then(() => {
+					this.getUserOrders();
 				});
-			console.log(order);
 		}
 	}
 }

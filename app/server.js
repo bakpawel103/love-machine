@@ -197,7 +197,13 @@ try {
 						body: message
 					})
 					.then((response) => {
-						res.status(200).json(response);
+						pool.query('select user_orders.* from user_orders inner join users on user_orders.user_id = users.id where users.id = $1', [req.params.user_id], (error, results) => {
+							if(error) {
+								throw error;
+							}
+				
+							res.status(200).json(results.rows);
+						});
 					})
 					.done();
 				});
