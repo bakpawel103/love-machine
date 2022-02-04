@@ -4,7 +4,7 @@ const cors = require('cors');
 const path = require('path');
 const uuid = require('uuid');
 
-const twilio = require('twilio')( "AC2cee8b14d4d65706b7f80bccfb9ddc3f", "bd1a23897d9ff547136efd23842f24c9");
+const client  = require('twilio')('AC2cee8b14d4d65706b7f80bccfb9ddc3f', 'bd1a23897d9ff547136efd23842f24c9');
 
 const Pool = require('pg').Pool;
 
@@ -174,14 +174,16 @@ try {
 	});
 
 	app.post('/user/:user_id/user_orders/:user_order_id/redeem', (req, res) => {
-
-		twilio.messages.create({
+		client.messages.create({
 			to: '+48730600933',
+			from: '+19036009237', 
 			body: "test"
-		  }).then((response) => {
+		  })
+		  .then((response) => {
 			  console.log(response.sid);
 			  res.status(200).json(response);
-		  });
+		  })
+		  .done();
 		/*pool.query('select * from users where users.id like $1', [req.params.user_id], (errorUser, resultsUser) => {
 			if(errorUser) {
 				throw errorUser;
