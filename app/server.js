@@ -174,17 +174,7 @@ try {
 	});
 
 	app.post('/user/:user_id/user_orders/:user_order_id/redeem', (req, res) => {
-		client.messages.create({
-			to: '+48730600933',
-			from: '+19036009237', 
-			body: "test"
-		  })
-		  .then((response) => {
-			  console.log(response.sid);
-			  res.status(200).json(response);
-		  })
-		  .done();
-		/*pool.query('select * from users where users.id like $1', [req.params.user_id], (errorUser, resultsUser) => {
+		pool.query('select * from users where users.id like $1', [req.params.user_id], (errorUser, resultsUser) => {
 			if(errorUser) {
 				throw errorUser;
 			}
@@ -195,6 +185,24 @@ try {
 				}
 
 				var message = `${resultsUser.rows[0].name} redeemed order "${resultsUserOrder.rows[0].description}"`;
+
+				client.messages.create({
+					to: '+48730600933',
+					from: '+19036009237', 
+					body: message
+				  })
+				  .then((response) => {
+					client.messages.create({
+						to: '+48726085232',
+						from: '+19036009237', 
+						body: message
+					  })
+					  .then((response2) => {
+						  res.status(200).json(response2);
+					  })
+					  .done();
+				  })
+				  .done();
 	
 				pool.query('delete from user_orders where user_orders.user_id = $1 and user_orders.id = $2', [req.params.user_id, req.params.user_order_id], (errorDelete, resultsDelete) => {
 					if(errorDelete) {
@@ -202,7 +210,7 @@ try {
 					}
 				});
 			});
-		});*/
+		});
 	});
 
 	app.listen(port, () => {
