@@ -177,7 +177,16 @@ try {
 	});
 
 	app.post('/user/:user_id/user_orders/:user_order_id/redeem', (req, res) => {
-		pool.query('select * from users where users.id like $1', [req.params.user_id], (errorUser, resultsUser) => {
+
+		twilio.messages.create({
+			from: "+19036009237",
+			to: "+48730600933",
+			body: "test"
+		  }).then((response) => {
+			  console.log(response.sid);
+			  res.status(200).json(response);
+		  });
+		/*pool.query('select * from users where users.id like $1', [req.params.user_id], (errorUser, resultsUser) => {
 			if(errorUser) {
 				throw errorUser;
 			}
@@ -193,18 +202,9 @@ try {
 					if(errorDelete) {
 						throw errorDelete;
 					}
-
-					twilio.messages.create({
-						from: "+19036009237",
-						to: "+48730600933",
-						body: message
-					  }).then((response) => {
-						  console.log(response.sid);
-						  res.status(200).json(response);
-					  });
 				});
 			});
-		});
+		});*/
 	});
 
 	app.listen(port, () => {
