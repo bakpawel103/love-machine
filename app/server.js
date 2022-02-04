@@ -3,7 +3,11 @@ const serveStatic = require('serve-static');
 const cors = require('cors');
 const path = require('path');
 const uuid = require('uuid');
-const messagebird = require('messagebird')('7PdjLVNfubHx7wvlUnQYOKffd');
+
+const twilio = require('twilio')(
+	"AC2cee8b14d4d65706b7f80bccfb9ddc3f",
+	"d41a3361b797255314f1860b6e155499"
+);
 
 const Pool = require('pg').Pool;
 
@@ -181,23 +185,18 @@ try {
 			pool.query('select user_orders.* from user_orders inner join users on user_orders.user_id = users.id where users.id = $1 and user_orders.id = $2', [req.params.user_id, req.params.user_order_id], (errorUserOrder, resultsUserOrder) => {
 				if(errorUserOrder) {
 					throw errorUserOrder;
-				}			
-	
-				res.status(200).json(resultsUserOrder.rows);
+				}
 
 				var message = `${resultsUser.rows[0].name} redeemed order "${resultsUserOrder.rows[0].description}"`;
 
-				messagebird.messages.create({
-					'originator': 'TestMessage',
-					'recipients': [ '+48730600933' ],
-					'body': message
-				}, (err, response) => {
-					if (err) {
-						return console.log(err);
-					}
-		
-					res.status(200).json(response);
-				});
+				twilio.messages.create({
+					from: "+19036009237",
+					to: "730600933",
+					body: message
+				  }).then((response) => {
+					  console.log(response.sid);
+					  res.status(200).json(response);
+				  });
 	
 				pool.query('delete from user_orders where user_orders.user_id = $1 and user_orders.id = $2', [req.params.user_id, req.params.user_order_id], (errorDelete, resultsDelete) => {
 					if(errorDelete) {
