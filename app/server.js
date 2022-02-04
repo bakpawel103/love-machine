@@ -14,26 +14,9 @@ const pool = new Pool({
   }
 });
 
-var params = {
-	'originator': 'TestMessage',
-	'recipients': [
-		'+48730600933'
-	],
-	'body': 'This is a test message'
-};
-
 const port = process.env.PORT || 80;
 
-try {	
-	var data = {
-		user: {
-			name: 'Julia',
-			points: 0
-		},
-		orders: [],
-		userOrders: []
-	}
-
+try {
 	const app = express();
 
 	app.use(express.json());
@@ -194,7 +177,7 @@ try {
 			if(errorUser) {
 				throw errorUser;
 			}
-			
+
 			pool.query('select user_orders.* from user_orders inner join users on user_orders.user_id = users.id where users.id = $1 and user_orders.id = $2', [req.params.user_id, req.params.user_order_id], (errorUserOrder, resultsUserOrder) => {
 				if(errorUserOrder) {
 					throw errorUserOrder;
@@ -212,15 +195,14 @@ try {
 					if (err) {
 						return console.log(err);
 					}
-					console.log(response);
+		
+					res.status(200).json(response);
 				});
 	
 				pool.query('delete from user_orders where user_orders.user_id = $1 and user_orders.id = $2', [req.params.user_id, req.params.user_order_id], (errorDelete, resultsDelete) => {
 					if(errorDelete) {
 						throw errorDelete;
 					}
-		
-					res.status(200).json(resultsDelete.rows);
 				});
 			});
 		});
