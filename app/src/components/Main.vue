@@ -136,14 +136,14 @@ export default {
 		getOrders () {
 			axios.get(`${globalVars.serverUrl}/user/${globalVars.defaultUserId}/orders`)
 				.then(response => {
-					this.orders = response.data;
+					this.orders = response.data.sort((a, b) => a.points - b.points);
 				});
 		},
 
 		getUserOrders () {
 			axios.get(`${globalVars.serverUrl}/user/${globalVars.defaultUserId}/user_orders`)
 				.then(response => {
-					this.userOrders = response.data;
+					this.userOrders = response.data.sort((a, b) => a.points - b.points);
 				});
 		},
 

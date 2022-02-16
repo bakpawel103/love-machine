@@ -2,16 +2,6 @@
   <transition-group name="list" tag="div">
     <v-card v-for="(item, index) in value" :key="item[itemId]" outlined class="mt-3" elevation="10" color="pink">
       <v-card-title class="justify-end pb-0">
-        <v-btn :disabled="index + 1 >= value.length" @click="down(index)" icon>
-          <v-icon>
-            mdi-arrow-down
-          </v-icon>
-        </v-btn>
-        <v-btn :disabled="index === 0" @click="up(index)" icon>
-          <v-icon>
-            mdi-arrow-up
-          </v-icon>
-        </v-btn>
         <v-btn @click="remove(index, item)" icon>
           <v-icon>
             mdi-close
@@ -53,20 +43,6 @@ export default {
     remove (index, item) {
       this.$emit('removeItem', item);
       const newValue = [...this.value.slice(0, index), ...this.value.slice(index + 1)]
-      this.$emit('input', newValue)
-    },
-
-    up (index) {
-      const newValue = [...this.value]
-      newValue[index] = this.value[index - 1]
-      newValue[index - 1] = this.value[index]
-      this.$emit('input', newValue)
-    },
-
-    down (index) {
-      const newValue = [...this.value]
-      newValue[index] = this.value[index + 1]
-      newValue[index + 1] = this.value[index]
       this.$emit('input', newValue)
     },
 
