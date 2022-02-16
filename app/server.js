@@ -4,7 +4,7 @@ const cors = require('cors');
 const path = require('path');
 const uuid = require('uuid');
 
-const client  = require('twilio')('AC2cee8b14d4d65706b7f80bccfb9ddc3f', 'bd1a23897d9ff547136efd23842f24c9');
+const client  = require('twilio')('AC2cee8b14d4d65706b7f80bccfb9ddc3f', '0eed0a00dbe3da1b65177f137abe8e37');
 
 const Pool = require('pg').Pool;
 
