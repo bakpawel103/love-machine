@@ -9,7 +9,7 @@ const client  = require('twilio')('AC2cee8b14d4d65706b7f80bccfb9ddc3f', '0eed0a0
 const Pool = require('pg').Pool;
 
 const pool = new Pool({
-  connectionString: 'postgres://iszlqxcjayzfnq:53065aeffbaf5d7973ca1d73f5e4644df624f332256abfaba9a1a4a2b03952ee@ec2-52-31-201-170.eu-west-1.compute.amazonaws.com:5432/dbrp2248vaddfo',
+  connectionString: 'postgres://nnuhzeuursrbfo:3498bc3afffad941e5ede0ea34183db8488d82d71834d783893f5ce40f73e1c8@ec2-99-80-108-106.eu-west-1.compute.amazonaws.com:5432/db6vidkfsnk3v2',
   ssl: {
     rejectUnauthorized: false
   }
